@@ -14,7 +14,7 @@ object TransformationJob {
 
     import spark.implicits._
 
-    val customer_raw = "C:/HFTL/Masterarbeit/DWH/TPC_H/tpch_sf1/data_sf1/customer.csv"
+    val customer_raw = "C:\\HFTL\\Masterarbeit\\DWH\\TPC_H\\tpch_sf1\\data_sf1\\customer.csv"
 
     val customer = spark.read.format("csv")
       .option("header", "false")

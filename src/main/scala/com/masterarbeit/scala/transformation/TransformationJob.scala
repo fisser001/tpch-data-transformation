@@ -14,13 +14,13 @@ object TransformationJob {
 
     import spark.implicits._
 
-    //val test = spark.read.option("header", "true").csv("C:/Daten/Projekte/Masterarbeit/TPC_H/tool/2.17.3/dbgen/Debug/tpch_sf1/data_sf1/customer.csv")
+    val customer_raw = "C:/HFTL/Masterarbeit/DWH/TPC_H/tpch_sf1/data_sf1/customer.csv"
 
     val customer = spark.read.format("csv")
       .option("header", "false")
       .option("inferSchema", "true")
       .option("delimiter", "|")
-      .load("C:/Daten/Projekte/Masterarbeit/TPC_H/tool/2.17.3/dbgen/Debug/tpch_sf1/data_sf1/customer.csv")
+      .load(customer_raw)
       .drop($"_c8")
 
     customer.show(2, false)
@@ -29,7 +29,7 @@ object TransformationJob {
     customer.write.mode("Overwrite")
       .format("orc")
       .option("compression", "zlib")
-      .save("C:/Daten/Projekte/Masterarbeit/TPC_H/tool/2.17.3/dbgen/Debug/tpch_sf1/data_sf1/customer.orc")
+      .save("C:/HFTL/Masterarbeit/DWH/TPC_H/tpch_sf1/data_sf1/customer")
 
     val sourceDf:DataFrame = Seq(
       (

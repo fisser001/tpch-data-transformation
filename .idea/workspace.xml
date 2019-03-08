@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="92cd79c7-b36a-4f4f-b253-cd81bbd3cf4d" name="Default Changelist" comment="">
+    <list default="true" id="92cd79c7-b36a-4f4f-b253-cd81bbd3cf4d" name="Default Changelist" comment="create denorm">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/com/masterarbeit/scala/transformation/TransformationJob.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/com/masterarbeit/scala/transformation/TransformationJob.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/masterarbeit/scala/transformation/TransformationJob$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/masterarbeit/scala/transformation/TransformationJob$.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/masterarbeit/scala/transformation/TransformationJob.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="186" column="145" selection-start-line="186" selection-start-column="145" selection-end-line="186" selection-end-column="145" />
+            <state relative-caret-position="927">
+              <caret line="222" column="29" selection-start-line="222" selection-start-column="29" selection-end-line="222" selection-end-column="29" />
               <folding>
                 <element signature="e#47#100#0" expanded="true" />
               </folding>
@@ -68,10 +69,12 @@
     <findStrings>
       <find>r_re</find>
       <find>c_cust</find>
+      <find>150</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SET_USER_NAME_GLOBALLY" value="false" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -88,8 +91,8 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1909" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-11" />
     <option name="width" value="1940" />
     <option name="height" value="2111" />
   </component>
@@ -171,7 +174,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1551905824189" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1551905878998" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
@@ -282,6 +285,14 @@
       <option name="presentableId" value="Default" />
       <updated>1551631943876</updated>
     </task>
+    <task id="LOCAL-00001" summary="create denorm">
+      <created>1551905857614</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1551905857614</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView">
@@ -294,10 +305,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="2575" height="1415" extended-state="6" />
-    <editor active="true" />
+    <frame x="-7" y="0" width="1293" height="1407" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49840257" visible="true" weight="0.17455268" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49840257" visible="true" weight="0.120032445" />
       <window_info id="Structure" order="1" sideWeight="0.50159746" side_tool="true" weight="0.25266525" />
       <window_info id="Azure Explorer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -307,19 +317,19 @@
       <window_info id="Favorites" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4989339" visible="true" weight="0.3281372" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4989339" weight="0.45568627" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3289166" />
       <window_info anchor="bottom" id="Azure Activity Log" order="7" />
-      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.32969603" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.3289166" />
       <window_info anchor="bottom" id="HDInsight Spark Submission" order="10" weight="0.3290461" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5010661" side_tool="true" weight="0.3290461" />
       <window_info anchor="bottom" id="Debug Remote Spark Job in Cluster" order="12" />
       <window_info anchor="bottom" id="Remote Spark Job in Cluster" order="13" />
-      <window_info anchor="bottom" id="Messages" order="14" sideWeight="0.4989339" weight="0.32735777" />
+      <window_info anchor="bottom" id="Messages" order="14" sideWeight="0.4989339" weight="0.32705882" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -334,6 +344,20 @@
   <component name="UnknownFeatures">
     <option featureType="com.intellij.configurationType" implementationName="SubmitSparkJob_Configuration" />
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="create denorm" />
+    <option name="LAST_COMMIT_MESSAGE" value="create denorm" />
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
@@ -347,8 +371,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/masterarbeit/scala/transformation/TransformationJob.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="186" column="145" selection-start-line="186" selection-start-column="145" selection-end-line="186" selection-end-column="145" />
+        <state relative-caret-position="927">
+          <caret line="222" column="29" selection-start-line="222" selection-start-column="29" selection-end-line="222" selection-end-column="29" />
           <folding>
             <element signature="e#47#100#0" expanded="true" />
           </folding>

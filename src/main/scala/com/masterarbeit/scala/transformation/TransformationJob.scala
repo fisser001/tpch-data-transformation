@@ -120,17 +120,24 @@ object TransformationJob {
     val partsuppDf = readData(spark,partsupp_raw,partsupp_schema)
 
 
-    /*writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\customer", customerDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\region", regionDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\nation", nationDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\order", ordersDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\lineitems", lineitemsDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\part", partDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\supplier", supplierDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\partsupp", partsuppDf)
+    /*writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\customer\\orc", customerDf)
+    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\region\\orc", regionDf)
+    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\nation\\orc", nationDf)
+    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\order\\orc", ordersDf)
+    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\lineitems\\orc", lineitemsDf)
+    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\part\\orc", partDf)
+    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\supplier\\orc", supplierDf)
+    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\partsupp\\orc", partsuppDf)
 */
-    val denormDf = denormJoin(spark, customerDf,nationDf, regionDf, ordersDf, lineitemsDf, supplierDf, partDf, partsuppDf)
-                   writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\denorm", denormDf)
+    /*val denormDf = denormJoin(spark, customerDf,nationDf, regionDf, ordersDf, lineitemsDf, supplierDf, partDf, partsuppDf)
+                   writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\denorm\\orc", denormDf)*/
+
+    val starDf = star(spark, customerDf,nationDf, regionDf, ordersDf, lineitemsDf, supplierDf, partDf, partsuppDf)
+    writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\star\\customer\\orc", starDf(0))
+    writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\star\\lineitemorders\\orc", starDf(1))
+    writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\star\\supplier\\orc", starDf(2))
+    writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\star\\part\\orc", starDf(3))
+    writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\star\\partsupp\\orc", starDf(4))
   }
 
   def readData(spark:SparkSession, dataPath: String,schemaOfCsv: StructType):DataFrame = {
@@ -189,6 +196,34 @@ object TransformationJob {
     //joined_df.show(2, false)
     //println(joined_df.count)
     return joined_df
+  }
+
+  def star(spark:SparkSession, customer: DataFrame,nation: DataFrame, region: DataFrame, orders: DataFrame, lineitems: DataFrame,
+           supplier: DataFrame, part: DataFrame, partsupp: DataFrame): List[DataFrame] = {
+
+    val joined_customer_Df = customer
+      .join(broadcast(nation), col("c_nationkey") === col("n_nationkey"), "left")
+      .join(broadcast(region), col("n_regionkey") === col("r_regionkey"), "left")
+
+    val joined_lineitem_order__Df = orders
+      .join(lineitems, col("o_orderkey") === col("l_orderkey"), "left")
+
+    val joined_supplier_Df = supplier
+      .join(broadcast(nation), col("s_nationkey") === col("n_nationkey"))
+      .join(broadcast(region), col("n_regionkey") === col("r_regionkey"))
+
+    val partsupp_df = partsupp
+      .withColumn("ps_timestamp", current_timestamp())
+
+
+    println(joined_customer_Df.count())
+    println(joined_lineitem_order__Df.count())
+    println(joined_supplier_Df.count())
+    println(part.count())
+    println(partsupp.count())
+
+return List(joined_customer_Df,joined_lineitem_order__Df, joined_supplier_Df, part, partsupp_df)
+
   }
 
 

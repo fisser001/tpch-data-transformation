@@ -16,27 +16,30 @@ object TransformationJob {
     import spark.implicits._
 
     spark.conf.set("spark.sql.crossJoin.enabled", true)
+    spark.conf.set("spark.sql.orc.enabled",false)
 
-    val customer_raw = "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\customer.csv"
+    val sf = 1
+
+    val customer_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\customer.csv"
     val customer_schema = StructType(Array(
       StructField("c_custkey", StringType, true),
       StructField("c_name", StringType, true),
       StructField("c_address", StringType, true),
       StructField("c_nationkey", StringType, true),
       StructField("c_phone", StringType, true),
-      StructField("c_acctbal", DoubleType, true),
+      StructField("c_acctbal", StringType, true),
       StructField("c_mktsegment", StringType, true),
       StructField("c_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val region_raw = "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\region.csv"
+    val region_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\region.csv"
     val region_schema = StructType(Array(
       StructField("r_regionkey", StringType, true),
       StructField("r_name", StringType, true),
       StructField("r_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val nation_raw = "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\nation.csv"
+    val nation_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\nation.csv"
     val nation_schema = StructType(Array(
       StructField("n_nationkey", StringType, true),
       StructField("n_name", StringType, true),
@@ -44,7 +47,7 @@ object TransformationJob {
       StructField("n_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val orders_raw = "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\orders.csv"
+    val orders_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\orders.csv"
     val orders_schema = StructType(Array(
       StructField("o_orderkey", StringType, true),
       StructField("o_custkey", StringType, true),
@@ -57,7 +60,7 @@ object TransformationJob {
       StructField("o_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val lineitems_raw = "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\lineitem.csv"
+    val lineitems_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\lineitem.csv"
     val lineitems_schema = StructType(Array(
       StructField("l_orderkey", StringType, true),
       StructField("l_partkey", StringType, true),
@@ -77,7 +80,7 @@ object TransformationJob {
       StructField("l_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val part_raw = "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\part.csv"
+    val part_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\part.csv"
     val part_schema = StructType(Array(
       StructField("p_partkey", StringType, true),
       StructField("p_name", StringType, true),
@@ -90,7 +93,7 @@ object TransformationJob {
       StructField("p_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val supplier_raw = "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\supplier.csv"
+    val supplier_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\supplier.csv"
     val supplier_schema = StructType(Array(
       StructField("s_suppkey", StringType, true),
       StructField("s_name", StringType, true),
@@ -101,7 +104,7 @@ object TransformationJob {
       StructField("s_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val partsupp_raw = "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\partsupp.csv"
+    val partsupp_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\partsupp.csv"
     val partsupp_schema = StructType(Array(
       StructField("ps_partkey", StringType, true),
       StructField("ps_suppkey", StringType, true),
@@ -120,24 +123,24 @@ object TransformationJob {
     val partsuppDf = readData(spark,partsupp_raw,partsupp_schema)
 
 
-    /*writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\customer\\orc", customerDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\region\\orc", regionDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\nation\\orc", nationDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\order\\orc", ordersDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\lineitems\\orc", lineitemsDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\part\\orc", partDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\supplier\\orc", supplierDf)
-    writeData(spark, "C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\partsupp\\orc", partsuppDf)
-*/
-    /*val denormDf = denormJoin(spark, customerDf,nationDf, regionDf, ordersDf, lineitemsDf, supplierDf, partDf, partsuppDf)
-                   writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\denorm\\orc", denormDf)*/
+    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\customer", customerDf)
+    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\region", regionDf)
+    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\nation", nationDf)
+    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\order", ordersDf)
+    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\lineitems", lineitemsDf)
+    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\part", partDf)
+    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\supplier", supplierDf)
+    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\partsupp", partsuppDf)
+
+    val denormDf = denormJoin(spark, customerDf,nationDf, regionDf, ordersDf, lineitemsDf, supplierDf, partDf, partsuppDf)
+                   writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\denorm", denormDf)
 
     val starDf = star(spark, customerDf,nationDf, regionDf, ordersDf, lineitemsDf, supplierDf, partDf, partsuppDf)
-    writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\star\\customer\\orc", starDf(0))
-    writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\star\\lineitemorders\\orc", starDf(1))
-    writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\star\\supplier\\orc", starDf(2))
-    writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\star\\part\\orc", starDf(3))
-    writeData(spark,"C:\\Daten\\Projekte\\Masterarbeit\\TPC_H\\tool\\2.17.3\\dbgen\\Debug\\tpch_sf1\\data_sf1\\transformed\\star\\partsupp\\orc", starDf(4))
+    writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\customer", starDf(0))
+    writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\lineitemorders", starDf(1))
+    writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\supplier", starDf(2))
+    writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\part", starDf(3))
+    writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\partsupp", starDf(4))
   }
 
   def readData(spark:SparkSession, dataPath: String,schemaOfCsv: StructType):DataFrame = {
@@ -156,9 +159,14 @@ object TransformationJob {
   }
 
   def writeData(spark:SparkSession, dataDestPath: String, data: DataFrame) = {
-    data.write.mode("Overwrite")
-      .format("orc")
-      .option("compression", "zlib")
+    data
+      .repartition(1)
+      .write
+      .mode("Overwrite")
+      .option("header", "false")
+      .option("delimiter", "|")
+      .format("csv")
+      //.option("compression", "SNAPPY")
       .save(dataDestPath)
   }
 

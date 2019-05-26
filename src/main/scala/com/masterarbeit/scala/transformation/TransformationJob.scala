@@ -8,19 +8,25 @@ object TransformationJob {
 
   def main(args: Array[String]) {
 
+    //Create spark session
     val spark = SparkSession.builder
       .master("local")
       .appName("test")
       .getOrCreate()
 
-    import spark.implicits._
-
+    //set spark configuration
     spark.conf.set("spark.sql.crossJoin.enabled", true)
     spark.conf.set("spark.sql.orc.enabled",false)
 
-    val sf = 1
+    //Set scale factor and path for reading and writing the data
+    val sf = 10 // can be 1,3 or 10
+    val pathRaw = s"E:\\tpch\\data\\sf$sf\\raw"
+    val pathWriteNormal = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal"
+    val pathWriteDenormal = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\denormal\\"
+    val pathWriteStar = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\"
 
-    val customer_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\customer.csv"
+    //schema for reading the customer csv file
+    val customer_raw = s"$pathRaw\\customer.csv"
     val customer_schema = StructType(Array(
       StructField("c_custkey", StringType, true),
       StructField("c_name", StringType, true),
@@ -32,14 +38,16 @@ object TransformationJob {
       StructField("c_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val region_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\region.csv"
+    //schema for reading the region csv file
+    val region_raw = s"$pathRaw\\region.csv"
     val region_schema = StructType(Array(
       StructField("r_regionkey", StringType, true),
       StructField("r_name", StringType, true),
       StructField("r_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val nation_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\nation.csv"
+    //schema for reading the nation csv file
+    val nation_raw = s"$pathRaw\\nation.csv"
     val nation_schema = StructType(Array(
       StructField("n_nationkey", StringType, true),
       StructField("n_name", StringType, true),
@@ -47,7 +55,8 @@ object TransformationJob {
       StructField("n_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val orders_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\orders.csv"
+    //schema for reading the orders csv file
+    val orders_raw = s"$pathRaw\\orders.csv"
     val orders_schema = StructType(Array(
       StructField("o_orderkey", StringType, true),
       StructField("o_custkey", StringType, true),
@@ -60,7 +69,8 @@ object TransformationJob {
       StructField("o_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val lineitems_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\lineitem.csv"
+    //schema for reading the lineitems csv file
+    val lineitems_raw = s"$pathRaw\\lineitem.csv"
     val lineitems_schema = StructType(Array(
       StructField("l_orderkey", StringType, true),
       StructField("l_partkey", StringType, true),
@@ -80,7 +90,8 @@ object TransformationJob {
       StructField("l_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val part_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\part.csv"
+    //schema for reading the part csv file
+    val part_raw = s"$pathRaw\\part.csv"
     val part_schema = StructType(Array(
       StructField("p_partkey", StringType, true),
       StructField("p_name", StringType, true),
@@ -93,7 +104,8 @@ object TransformationJob {
       StructField("p_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val supplier_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\supplier.csv"
+    //schema for reading the supplier csv file
+    val supplier_raw = s"$pathRaw\\supplier.csv"
     val supplier_schema = StructType(Array(
       StructField("s_suppkey", StringType, true),
       StructField("s_name", StringType, true),
@@ -104,7 +116,8 @@ object TransformationJob {
       StructField("s_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
-    val partsupp_raw = s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\raw\\partsupp.csv"
+    //schema for reading the partsupp csv file
+    val partsupp_raw = s"$pathRaw\\partsupp.csv"
     val partsupp_schema = StructType(Array(
       StructField("ps_partkey", StringType, true),
       StructField("ps_suppkey", StringType, true),
@@ -113,6 +126,7 @@ object TransformationJob {
       StructField("ps_comment", StringType, true),
       StructField("last_col", StringType, true)))
 
+    //call functions to read the source data
     val customerDf = readData(spark,customer_raw,customer_schema)
     val regionDf = readData(spark,region_raw,region_schema)
     val nationDf = readData(spark,nation_raw,nation_schema)
@@ -123,26 +137,30 @@ object TransformationJob {
     val partsuppDf = readData(spark,partsupp_raw,partsupp_schema)
 
 
-    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\customer", customerDf)
-    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\region", regionDf)
-    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\nation", nationDf)
-    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\order", ordersDf)
-    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\lineitems", lineitemsDf)
-    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\part", partDf)
-    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\supplier", supplierDf)
-    writeData(spark, s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\normal\\partsupp", partsuppDf)
+    //write data for third normal schema
+    writeData(spark, s"$pathWriteNormal\\customer", customerDf)
+    writeData(spark, s"$pathWriteNormal\\region", regionDf)
+    writeData(spark, s"$pathWriteNormal\\nation", nationDf)
+    writeData(spark, s"$pathWriteNormal\\order", ordersDf)
+    writeData(spark, s"$pathWriteNormal\\lineitems", lineitemsDf)
+    writeData(spark, s"$pathWriteNormal\\part", partDf)
+    writeData(spark, s"$pathWriteNormal\\supplier", supplierDf)
+    writeData(spark, s"$pathWriteNormal\\partsupp", partsuppDf)
 
+    //call function to denormal the third normal data and write the data to the file system
     val denormDf = denormJoin(spark, customerDf,nationDf, regionDf, ordersDf, lineitemsDf, supplierDf, partDf, partsuppDf)
-                   writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\denorm", denormDf)
+    writeData(spark,s"$pathWriteDenormal", denormDf)
 
+    //call function to trasnform the normal data to the star schema and write the data to the file system
     val starDf = star(spark, customerDf,nationDf, regionDf, ordersDf, lineitemsDf, supplierDf, partDf, partsuppDf)
-    writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\customer", starDf(0))
-    writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\lineitemorders", starDf(1))
-    writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\supplier", starDf(2))
-    writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\part", starDf(3))
-    writeData(spark,s"C:\\Daten\\Projekte\\Masterarbeit\\tpch\\data\\sf$sf\\star\\partsupp", starDf(4))
+    writeData(spark,s"$pathWriteStar\\customer", starDf(0))
+    writeData(spark,s"$pathWriteStar\\lineitemorders", starDf(1))
+    writeData(spark,s"$pathWriteStar\\supplier", starDf(2))
+    writeData(spark,s"$pathWriteStar\\part", starDf(3))
+    writeData(spark,s"$pathWriteStar\\partsupp", starDf(4))
   }
 
+  //function for reading the raw csv files
   def readData(spark:SparkSession, dataPath: String,schemaOfCsv: StructType):DataFrame = {
     import spark.implicits._
 
@@ -158,9 +176,12 @@ object TransformationJob {
     return data
   }
 
+  //function to write the transformed data to the file system
   def writeData(spark:SparkSession, dataDestPath: String, data: DataFrame) = {
+
     data
-      .repartition(1)
+      .na.fill("")
+      //.repartition(1)
       .write
       .mode("Overwrite")
       .option("header", "false")
@@ -170,6 +191,7 @@ object TransformationJob {
       .save(dataDestPath)
   }
 
+  //function to transform the normal data to the denormalized schema
   def denormJoin(spark:SparkSession, customer: DataFrame,nation: DataFrame, region: DataFrame, orders: DataFrame, lineitems: DataFrame,
                  supplier: DataFrame, part: DataFrame, partsupp: DataFrame):DataFrame = {
 
@@ -186,8 +208,8 @@ object TransformationJob {
     val region2 = region
       .select(
         $"r_regionkey".as("r2_regionkey"),
-        $"r_name".as("r2.name"),
-        $"r_comment".as("r2.comment")
+        $"r_name".as("r2_name"),
+        $"r_comment".as("r2_comment")
       )
 
     val joined_df = customer
@@ -200,12 +222,13 @@ object TransformationJob {
       .join(broadcast(region2), col("n2_regionkey") === col("r2_regionkey"), "left")
       .join(part, lineitems.col("l_partkey") === part.col("p_partkey"), "left")
       .join(partsupp, (partsupp.col("ps_partkey") === part.col("p_partkey") && partsupp.col("ps_suppkey") === supplier.col("s_suppkey")), "left")
+      .drop($"n_comment").drop($"r_comment").drop($"o_comment").drop($"l_comment")
+      .drop($"n2_comment").drop($"r2_comment").drop($"p_comment").drop($"ps_comment")
 
-    //joined_df.show(2, false)
-    //println(joined_df.count)
     return joined_df
   }
 
+  //function to transform the normal data to the star schema
   def star(spark:SparkSession, customer: DataFrame,nation: DataFrame, region: DataFrame, orders: DataFrame, lineitems: DataFrame,
            supplier: DataFrame, part: DataFrame, partsupp: DataFrame): List[DataFrame] = {
 
@@ -216,19 +239,13 @@ object TransformationJob {
     val joined_lineitem_order__Df = orders
       .join(lineitems, col("o_orderkey") === col("l_orderkey"), "left")
 
+
     val joined_supplier_Df = supplier
       .join(broadcast(nation), col("s_nationkey") === col("n_nationkey"))
       .join(broadcast(region), col("n_regionkey") === col("r_regionkey"))
 
     val partsupp_df = partsupp
       .withColumn("ps_timestamp", current_timestamp())
-
-
-    println(joined_customer_Df.count())
-    println(joined_lineitem_order__Df.count())
-    println(joined_supplier_Df.count())
-    println(part.count())
-    println(partsupp.count())
 
 return List(joined_customer_Df,joined_lineitem_order__Df, joined_supplier_Df, part, partsupp_df)
 
